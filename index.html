@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío Metodológico - Investigación II - Cruz Roja</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fuchsia: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                        pastel: {
+                            pink: '#fce7f3',
+                            rose: '#ffe4e6',
+                            purple: '#f3e8ff',
+                            blue: '#e0f2fe',
+                            bg: '#fdf2f8',
+                            card: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fae8ff 50%, #f0f9ff 100%);
+            background-attachment: fixed;
+        }
+        .pulse-timer {
+            animation: pulse-fuchsia 0.8s infinite;
+        }
+        @keyframes pulse-fuchsia {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.06); opacity: 0.85; }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.93);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.25);
+        }
+        .podium-1 { height: 170px; }
+        .podium-2 { height: 125px; }
+        .podium-3 { height: 95px; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-fuchsia-500 selection:text-white">
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-fuchsia-100 sticky top-0 z-40 px-4 py-3 shadow-sm">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-fuchsia-600 to-pink-500 rounded-xl flex items-center justify-center shadow-md text-white font-black text-xl">
+                    <i class="fa-solid fa-plus text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg leading-tight text-slate-900 flex items-center gap-2">
+                        Desafío Metodológico
+                        <span class="text-xs bg-fuchsia-100 text-fuchsia-700 font-bold px-2 py-0.5 rounded-full border border-fuchsia-200">
+                            Cruz Roja
+                        </span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium">Investigación en Enfermería II • Cátedra Prof. Vane Ferreyra</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button id="btn-sound" onclick="toggleSound()" class="p-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-fuchsia-700 text-sm transition border border-pink-200" title="Activar/Desactivar Sonido">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+                <button onclick="showView('proyector')" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-fuchsia-200 transition transform active:scale-95">
+                    <i class="fa-solid fa-display"></i>
+                    <span>Modo Proyector</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+        <!-- VIEW 1: WELCOME & REGISTRATION -->
+        <section id="view-welcome" class="space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-xl space-y-6 relative overflow-hidden">
+                <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-fuchsia-200/50 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="text-center space-y-4 max-w-2xl mx-auto">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-fuchsia-100 text-fuchsia-800 text-xs font-extrabold border border-fuchsia-200">
+                        <i class="fa-solid fa-sparkles text-fuchsia-600"></i> Competencia Integradora en Vivo (50 Preguntas)
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        ¿Preparado para poner a prueba tus conocimientos?
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Evaluación integradora de Investigación II. Responde correctamente para sumar puntos y llegar al podio de la clase.
+                    </p>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-3 gap-3 my-6 text-center text-xs font-semibold bg-pink-50/70 p-4 rounded-2xl border border-pink-100">
+                        <div>
+                            <div class="text-fuchsia-600 font-black text-xl sm:text-2xl" id="stat-total-q">50</div>
+                            <div class="text-slate-500">Preguntas</div>
+                        </div>
+                        <div>
+                            <div class="text-pink-600 font-black text-xl sm:text-2xl">5 min</div>
+                            <div class="text-slate-500">Por pregunta</div>
+                        </div>
+                        <div>
+                            <div class="text-fuchsia-600 font-black text-xl sm:text-2xl">Top 3</div>
+                            <div class="text-slate-500">Premios Puestos 1, 2 y 3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registration Form (Only Name & Surname) -->
+                <form id="form-register" onsubmit="startQuiz(event)" class="max-w-md mx-auto space-y-4 pt-2">
+                    <div>
+                        <label for="student-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Nombre y Apellido <span class="text-fuchsia-600">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-fuchsia-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="student-name" required placeholder="Ej. Florencia Peralta"
+                                class="w-full pl-10 pr-4 py-3 bg-white border border-fuchsia-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:border-transparent text-sm transition shadow-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-extrabold rounded-xl text-base shadow-lg shadow-fuchsia-200 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Ingresar a la Competencia
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 2: QUIZ / GAMEPLAY SCREEN -->
+        <section id="view-quiz" class="hidden space-y-4">
+            <!-- Progress & Status Bar -->
+            <div class="glass-card rounded-2xl p-4 shadow-sm flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span id="badge-question-num" class="bg-fuchsia-600 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                        Pregunta 1/50
+                    </span>
+                    <span id="badge-category" class="bg-fuchsia-100 text-fuchsia-800 text-xs font-bold px-3 py-1 rounded-lg border border-fuchsia-200">
+                        Hipótesis
+                    </span>
+                </div>
+
+                <!-- Timer, Streak and Score -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-1.5 bg-pink-50 px-3 py-1.5 rounded-xl border border-pink-200">
+                        <i class="fa-solid fa-fire text-fuchsia-600"></i>
+                        <span id="streak-counter" class="text-xs font-extrabold text-fuchsia-800">Racha: x1</span>
+                    </div>
+
+                    <div id="timer-box" class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-fuchsia-200 shadow-sm">
+                        <i class="fa-solid fa-stopwatch text-fuchsia-600"></i>
+                        <span id="timer-text" class="text-base font-black text-slate-900 font-mono">5:00</span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 text-fuchsia-700 font-black text-lg">
+                        <i class="fa-solid fa-star text-amber-400"></i>
+                        <span id="score-live">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-white/60 h-3 rounded-full overflow-hidden p-0.5 border border-fuchsia-100">
+                <div id="progress-bar-fill" class="bg-gradient-to-r from-fuchsia-500 to-pink-500 h-full rounded-full transition-all duration-300" style="width: 2%;"></div>
+            </div>
+
+            <!-- Question Box -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <!-- Situation / Context -->
+                <div id="question-context-box" class="hidden bg-pink-50/80 border-l-4 border-fuchsia-500 p-4 rounded-r-2xl text-sm text-slate-700 italic">
+                    <p id="question-context-text"></p>
+                </div>
+
+                <!-- Title -->
+                <h3 id="question-title" class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
+                    Cargando consigna...
+                </h3>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <!-- Feedback Box -->
+                <div id="feedback-box" class="hidden rounded-2xl p-5 border text-sm space-y-2 transition-all">
+                    <div class="flex items-center gap-2 font-bold text-base" id="feedback-title">
+                        <!-- Icon + Dynamic text -->
+                    </div>
+                    <p id="feedback-text" class="text-slate-700 leading-relaxed"></p>
+                    <button id="btn-next-q" onclick="nextQuestion()" class="mt-3 px-5 py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 transition shadow-md ml-auto">
+                        Siguiente Pregunta <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: STUDENT RESULT SCREEN -->
+        <section id="view-result" class="hidden space-y-6 text-center">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-xl space-y-6 max-w-xl mx-auto relative overflow-hidden">
+                <div class="w-20 h-20 bg-fuchsia-100 text-fuchsia-600 border border-fuchsia-200 rounded-full flex items-center justify-center mx-auto text-3xl shadow-md">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+
+                <div class="space-y-2">
+                    <span class="text-xs font-bold text-fuchsia-600 uppercase tracking-widest">¡Actividad Completada!</span>
+                    <h2 id="result-student-name" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Buen trabajo</h2>
+                    <p id="result-badge-status" class="text-xs sm:text-sm font-bold inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Aprobado (≥ 60% = Nota 4+)
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 bg-fuchsia-50/60 p-4 rounded-2xl border border-fuchsia-100">
+                    <div>
+                        <div class="text-slate-500 text-xs">Puntaje Total</div>
+                        <div id="res-score" class="text-2xl font-black text-fuchsia-700">0</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-xs">Aciertos</div>
+                        <div id="res-correct" class="text-2xl font-black text-emerald-600">0/50</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-xs">Aprobación</div>
+                        <div id="res-percentage" class="text-2xl font-black text-pink-600">0%</div>
+                    </div>
+                </div>
+
+                <p id="result-feedback-msg" class="text-xs sm:text-sm text-slate-600 italic px-2">
+                    Tus respuestas se han guardado para la tabla de posiciones general del aula.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="showView('proyector')" class="flex-1 py-3 bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="fa-solid fa-trophy"></i> Ver Tabla de Posiciones
+                    </button>
+                    <button onclick="resetApp()" class="py-3 px-5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold rounded-xl text-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Volver a Empezar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: PROYECTOR / CLASSROOM LIVE LEADERBOARD MODE -->
+        <section id="view-proyector" class="hidden space-y-6">
+            <!-- Proyector Header Bar -->
+            <div class="glass-card rounded-2xl p-4 shadow-sm flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-fuchsia-600 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm">
+                        <i class="fa-solid fa-display"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-extrabold text-lg text-slate-900">Pantalla del Aula • Competencia en Vivo</h2>
+                        <p class="text-xs text-slate-500">Investigación II • Cruz Roja Argentina</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="triggerConfetti()" class="px-3.5 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-extrabold rounded-xl text-xs flex items-center gap-1.5 transition shadow-sm">
+                        <i class="fa-solid fa-crown"></i> Celebrar Premiación
+                    </button>
+                    <button onclick="showReviewModal()" class="px-3.5 py-2 bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 font-bold rounded-xl text-xs flex items-center gap-1.5 transition border border-fuchsia-200">
+                        <i class="fa-solid fa-chalkboard-user"></i> Repasar Respuestas
+                    </button>
+                    <button onclick="showView('welcome')" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition border border-slate-200 shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i> Inicio
+                    </button>
+                </div>
+            </div>
+
+            <!-- PODIUM (1st, 2nd, 3rd Place) -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <h3 class="text-center font-black text-xl text-fuchsia-800 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-trophy text-amber-400"></i> Podio de Ganadores
+                </h3>
+
+                <div id="podium-container" class="flex justify-center items-end gap-3 sm:gap-6 pt-6 pb-2">
+                    <!-- 2nd Place -->
+                    <div class="flex flex-col items-center flex-1 max-w-[130px]">
+                        <div id="podium-2-avatar" class="w-12 h-12 rounded-full bg-slate-100 border-2 border-slate-300 flex items-center justify-center font-extrabold text-slate-700 text-sm shadow mb-1 text-center overflow-hidden">
+                            --
+                        </div>
+                        <div id="podium-2-name" class="text-xs font-bold text-slate-800 truncate w-full text-center">Sin datos</div>
+                        <div id="podium-2-score" class="text-xs text-fuchsia-600 font-black mb-1">0 pts</div>
+                        <div class="w-full bg-gradient-to-t from-slate-300 to-slate-200 border-t-4 border-slate-400 podium-2 rounded-t-2xl flex flex-col items-center justify-center shadow-md">
+                            <span class="text-2xl font-black text-slate-700">2º</span>
+                            <span class="text-[10px] text-slate-600 font-bold uppercase">Plata</span>
+                        </div>
+                    </div>
+
+                    <!-- 1st Place -->
+                    <div class="flex flex-col items-center flex-1 max-w-[150px]">
+                        <i class="fa-solid fa-crown text-amber-400 text-2xl mb-1 animate-bounce"></i>
+                        <div id="podium-1-avatar" class="w-16 h-16 rounded-full bg-fuchsia-100 border-2 border-fuchsia-500 flex items-center justify-center font-black text-fuchsia-800 text-base shadow-lg mb-1 text-center overflow-hidden">
+                            --
+                        </div>
+                        <div id="podium-1-name" class="text-sm font-extrabold text-slate-900 truncate w-full text-center">Sin datos</div>
+                        <div id="podium-1-score" class="text-sm text-fuchsia-700 font-black mb-1">0 pts</div>
+                        <div class="w-full bg-gradient-to-t from-fuchsia-600 to-pink-500 border-t-4 border-amber-300 podium-1 rounded-t-2xl flex flex-col items-center justify-center shadow-lg">
+                            <span class="text-3xl font-black text-white">1º</span>
+                            <span class="text-xs text-pink-100 font-black uppercase">Oro</span>
+                        </div>
+                    </div>
+
+                    <!-- 3rd Place -->
+                    <div class="flex flex-col items-center flex-1 max-w-[130px]">
+                        <div id="podium-3-avatar" class="w-12 h-12 rounded-full bg-amber-50 border-2 border-amber-400 flex items-center justify-center font-bold text-amber-700 text-sm shadow mb-1 text-center overflow-hidden">
+                            --
+                        </div>
+                        <div id="podium-3-name" class="text-xs font-bold text-slate-800 truncate w-full text-center">Sin datos</div>
+                        <div id="podium-3-score" class="text-xs text-fuchsia-600 font-black mb-1">0 pts</div>
+                        <div class="w-full bg-gradient-to-t from-amber-200 to-amber-100 border-t-4 border-amber-400 podium-3 rounded-t-2xl flex flex-col items-center justify-center shadow-md">
+                            <span class="text-xl font-black text-amber-800">3º</span>
+                            <span class="text-[10px] text-amber-700 font-bold uppercase">Bronce</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEADERBOARD TABLE -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-ol text-fuchsia-600"></i> Tabla General de Posiciones
+                    </h3>
+                    <button onclick="clearLeaderboardConfirm()" class="text-xs text-slate-400 hover:text-red-500 transition">
+                        <i class="fa-solid fa-trash"></i> Reiniciar Tabla
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-700">
+                        <thead class="bg-pink-50/80 text-xs uppercase text-slate-500 border-b border-pink-100">
+                            <tr>
+                                <th class="py-3 px-4">Pos</th>
+                                <th class="py-3 px-4">Estudiante</th>
+                                <th class="py-3 px-4 text-center">Aciertos</th>
+                                <th class="py-3 px-4 text-right">Puntaje Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body" class="divide-y divide-fuchsia-50">
+                            <tr>
+                                <td colspan="4" class="py-8 text-center text-slate-400 italic">
+                                    No hay resultados registrados aún.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: ANSWER REVIEW FOR CLASS DISCUSSION -->
+    <div id="modal-review" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white border border-fuchsia-200 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            <div class="p-5 border-b border-fuchsia-100 flex justify-between items-center bg-pink-50/50 rounded-t-3xl">
+                <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user text-fuchsia-600"></i> Repaso Teórico de Preguntas (50 Consignas)
+                </h3>
+                <button onclick="closeReviewModal()" class="text-slate-400 hover:text-slate-700 p-1 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="review-content" class="p-6 overflow-y-auto space-y-6 text-sm divide-y divide-fuchsia-100">
+                <!-- Dynamic questions review -->
+            </div>
+            <div class="p-4 border-t border-fuchsia-100 text-right bg-slate-50 rounded-b-3xl">
+                <button onclick="closeReviewModal()" class="px-5 py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold rounded-xl text-xs sm:text-sm">
+                    Cerrar Repaso
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white/60 border-t border-fuchsia-100 py-3 px-4 text-center text-xs text-slate-500 mt-6">
+        Cruz Roja Argentina • Investigación en Enfermería II • Cátedra Prof. Ferreyra Vanesa
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cruz-roja-inv2-pastel-50q';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                const initAuth = async () => {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    currentUser = auth.currentUser;
+                    listenLeaderboard();
+                };
+                initAuth();
+            }
+        } catch (e) {
+            console.warn("Firebase initialization skipped, using local storage backup:", e);
+        }
+
+        function listenLeaderboard() {
+            if (!db || !currentUser) return;
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'respuestas');
+            onSnapshot(colRef, (snapshot) => {
+                const list = [];
+                snapshot.forEach(docSnap => list.push(docSnap.data()));
+                updateLeaderboardUI(list);
+            }, (err) => console.error("Leaderboard snapshot error:", err));
+        }
+
+        window.saveResultToCloud = async function(resultData) {
+            let localResults = JSON.parse(localStorage.getItem('cr_results_pastel_50q') || '[]');
+            localResults.push(resultData);
+            localStorage.setItem('cr_results_pastel_50q', JSON.stringify(localResults));
+
+            if (db && currentUser) {
+                try {
+                    const docId = resultData.id || crypto.randomUUID();
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'respuestas', docId);
+                    await setDoc(docRef, resultData);
+                } catch (e) {
+                    console.error("Error saving to cloud:", e);
+                }
+            } else {
+                updateLeaderboardUI(localResults);
+            }
+        };
+
+        window.fetchLatestResults = function() {
+            return JSON.parse(localStorage.getItem('cr_results_pastel_50q') || '[]');
+        };
+    </script>
+
+    <script>
+        /* FULL 50-QUESTION BANK (Aligned with UBA / Cruz Roja Inv II - Prof. Vane Ferreyra) */
+        const QUESTIONS_BANK = [
+            {
+                category: "Hipótesis en Investigación",
+                context: "En un estudio sobre enfermería se analiza si la implementación de talleres de autocuidado disminuye los niveles de estrés en enfermeros de guardia.",
+                title: "¿Cuál de las siguientes opciones define correctamente el concepto de HIPÓTESIS?",
+                options: [
+                    "Es una afirmación definitiva e inmutable sobre el fenómeno.",
+                    "Es una suposición o explicación tentativa que puede comprobarse empíricamente.",
+                    "Es el propósito amplio y general de la investigación.",
+                    "Es la conclusión obtenida al finalizar el estudio."
+                ],
+                correct: 1,
+                explanation: "Una hipótesis es una explicación tentativa del fenómeno formulada como proposición que requiere ser contrastada empíricamente."
+            },
+            {
+                category: "Variables en Investigación",
+                context: "Estudio: 'Efecto de la simulación clínica en el rendimiento académico de alumnos de enfermería'.",
+                title: "¿Cómo se define la VARIABLE DEPENDIENTE en este planteo?",
+                options: [
+                    "Es el factor o intervención que manipula el investigador (Simulación clínica).",
+                    "Es el resultado o efecto que se espera medir (Rendimiento académico).",
+                    "Es el contexto geográfico donde se realiza el estudio.",
+                    "Es el instrumento de recolección de datos."
+                ],
+                correct: 1,
+                explanation: "La variable dependiente es el resultado o propiedad que se busca medir o explicar (Rendimiento académico), mientras que la independiente es la causa o intervención."
+            },
+            {
+                category: "Pregunta de Investigación",
+                title: "¿Qué requisito fundamental debe cumplir una PREGUNTA DE INVESTIGACIÓN bien formulada?",
+                options: [
+                    "Ser breve y abierta sin delimitar el espacio ni el tiempo.",
+                    "Formularse como una hipótesis o afirmación directa.",
+                    "Estar delimitada con claridad en variables, población/unidad de análisis, espacio y tiempo.",
+                    "Anticipar las opiniones subjetivas del investigador."
+                ],
+                correct: 2,
+                explanation: "Una pregunta de investigación debe ser precisa y delimitada en términos de variables, sujeto/población, tiempo y lugar."
+            },
+            {
+                category: "Errores Metodológicos",
+                title: "¿Cuál es el error metodológico en el enunciado: 'El objetivo general es concientizar a los pacientes diabéticos para que se cuiden mejor'?",
+                options: [
+                    "Está redactado en tiempo pasado.",
+                    "Confunde un objetivo de investigación con un objetivo de intervención/educación clínica.",
+                    "Falta definir la variable independiente.",
+                    "No especifica el marco teórico de la institución."
+                ],
+                correct: 1,
+                explanation: "Concientizar o educar son acciones de intervención clínica o educativa. La investigación busca generar conocimiento (ej. 'Analizar el nivel de conocimiento...')."
+            },
+            {
+                category: "Errores Conceptuales en Objetivos",
+                title: "Identifica la frase que contiene un ERROR CONCEPTUAL metodológico:",
+                options: [
+                    "El objetivo general es más amplio que los objetivos específicos.",
+                    "La revisión bibliográfica se realiza para fundamentar el planteamiento del problema.",
+                    "El objetivo específico es más general y amplio que el objetivo general.",
+                    "La unidad de análisis es el sujeto o elemento sobre el cual se obtiene información."
+                ],
+                correct: 2,
+                explanation: "Es FALSO decir que el objetivo específico es más amplio. El Objetivo General expresa el logro amplio del estudio, mientras los Específicos son los pasos desglosados para alcanzarlo."
+            },
+            {
+                category: "Enfoques de Investigación",
+                context: "Un estudio busca 'Comprender las experiencias y vivencias del personal de enfermería en el cuidado de pacientes en etapa terminal'.",
+                title: "¿A qué ENFOQUE de investigación corresponde este planteo?",
+                options: [
+                    "Enfoque Cuantitativo Descriptivo",
+                    "Enfoque Cualitativo",
+                    "Enfoque Experimental de Laboratorio",
+                    "Enfoque Bioestadístico Puro"
+                ],
+                correct: 1,
+                explanation: "Los estudios centrados en comprender experiencias, vivencias y significados subjetivos responden al Enfoque CUALITATIVO."
+            },
+            {
+                category: "Muestreo y Criterios",
+                title: "En la selección de la muestra, la frase 'Pacientes con alteraciones cognitivas que impidan responder autónomamente' corresponde a:",
+                options: [
+                    "Universo o Población Total",
+                    "Criterio de Inclusión",
+                    "Criterio de Exclusión",
+                    "Criterio de Eliminación"
+                ],
+                correct: 2,
+                explanation: "Los criterios de exclusión son las características que hacen que un sujeto perteneciente a la población no deba ser incluido en el estudio por razones técnicas o éticas."
+            },
+            {
+                category: "Ética en Investigación",
+                title: "Respecto al CONSENTIMIENTO INFORMADO en salud, señala la opción correcta:",
+                options: [
+                    "Solo se exige en investigaciones experimentales con medicamentos.",
+                    "Puede omitirse si la investigación tiene fines exclusivamente académicos.",
+                    "Garantiza la participación voluntaria, el anonimato y el derecho a retirarse en cualquier momento.",
+                    "Consiste únicamente en pedir autorización al director del hospital."
+                ],
+                correct: 2,
+                explanation: "El Consentimiento Informado es un requisito ético fundamental que respeta la autonomía, garantiza la voluntariedad y el anonimato en toda investigación con seres humanos."
+            },
+            {
+                category: "Instrumentos de Recolección",
+                title: "¿Qué instrumento y técnica son los más adecuados para medir conocimientos cuantitativamente en una muestra amplia?",
+                options: [
+                    "Entrevista en profundidad abierta",
+                    "Observación participante sin guía",
+                    "Encuesta mediante cuestionario estructurado con preguntas cerradas",
+                    "Socio-drama grupal"
+                ],
+                correct: 2,
+                explanation: "El cuestionario estructurado con preguntas cerradas es el instrumento estándar para recolectar datos estandarizados y cuantificables de forma eficiente."
+            },
+            {
+                category: "Operacionalización de Variables",
+                context: "Variable: 'Nivel de conocimiento sobre pautas de alarma en hipertensión arterial'.",
+                title: "¿Cuál de los siguientes elementos corresponde a un INDICADOR de esta variable?",
+                options: [
+                    "Adultos atendidos en el centro de salud en 2026.",
+                    "Porcentaje de respuestas correctas sobre pautas de alarma en el cuestionario.",
+                    "El centro de atención primaria de la salud.",
+                    "Aprobar la materia con nota 4."
+                ],
+                correct: 1,
+                explanation: "El indicador es el parámetro empírico concreto y medible que operacionaliza la variable (ej. porcentaje de respuestas correctas o puntaje obtenido)."
+            },
+            {
+                category: "Tipo y Diseño de Estudio",
+                context: "Un estudio medirá la relación entre el nivel de estrés y el ausentismo laboral recolectando datos una sola vez en cada participante durante 2026 sin manipular las variables.",
+                title: "¿A qué TIPO Y DISEÑO corresponde este estudio?",
+                options: [
+                    "Experimental, Longitudinal y Cualitativo",
+                    "No experimental, Descriptivo-Correlacional y Transversal",
+                    "Cualitativo Fenomenológico",
+                    "Pre-experimental de laboratorio"
+                ],
+                correct: 1,
+                explanation: "Es No experimental (sin manipulación de variables), Correlacional (mide relación) y Transversal (recolección en un único momento temporal)."
+            },
+            {
+                category: "Delimitación del Problema",
+                context: "Pregunta: ¿Cómo influye el nivel de estrés laboral en el rendimiento del personal de enfermería durante el año 2026?",
+                title: "¿Qué elemento fundamental le falta a esta pregunta de investigación?",
+                options: [
+                    "La variable dependiente.",
+                    "La dimensión espacial (dónde se realiza el estudio).",
+                    "La dimensión temporal.",
+                    "El objetivo general."
+                ],
+                correct: 1,
+                explanation: "Tiene variables (estrés y rendimiento) y tiempo (2026), pero no especifica la dimensión espacial (en qué hospital o institución se estudia)."
+            },
+            {
+                category: "Delimitación del Problema",
+                context: "Pregunta: ¿Cuál es el nivel de adherencia al lavado de manos en el personal de enfermería de la UTI del Hospital Central?",
+                title: "¿Qué dimensión imprescindible está ausente en este enunciado?",
+                options: [
+                    "La unidad de análisis.",
+                    "La dimensión temporal (cuándo se realiza el estudio).",
+                    "La variable de estudio.",
+                    "La dimensión espacial."
+                ],
+                correct: 1,
+                explanation: "Falta la dimensión temporal que indica el período histórico o cuatrimestre de observación (ej. 'durante el segundo semestre de 2026')."
+            },
+            {
+                category: "Errores en Preguntas de Investigación",
+                title: "¿Por qué la frase '¿Los enfermeros aplican las normas de bioseguridad en la guardia?' es una pregunta de investigación mal formulada?",
+                options: [
+                    "Porque es una pregunta dicotómica que se responde con un simple SÍ o NO.",
+                    "Porque está redactada en tercera persona.",
+                    "Porque utiliza la palabra 'bioseguridad'.",
+                    "Porque es un objetivo general."
+                ],
+                correct: 0,
+                explanation: "Las preguntas de investigación no deben ser dicotómicas (responderse con sí/no). Deben indagarse con interrogantes abiertos como '¿En qué medida...' o '¿Cuál es el nivel de...'."
+            },
+            {
+                category: "Unidad de Análisis",
+                context: "Estudio sobre 'Calidad de sueño y rendimiento académico en estudiantes de segundo año de la Licenciatura en Enfermería de la UBA durante 2026'.",
+                title: "¿Cuál es la UNIDAD DE ANÁLISIS en esta investigación?",
+                options: [
+                    "La Universidad de Buenos Aires.",
+                    "Los exámenes finales rendidos.",
+                    "Cada estudiante de segundo año de Enfermería de la UBA.",
+                    "La calidad de sueño."
+                ],
+                correct: 2,
+                explanation: "La unidad de análisis es el sujeto u objeto concreto sobre el que se obtienen las mediciones (en este caso, cada estudiante individual)."
+            },
+            {
+                category: "Redacción de Objetivos",
+                title: "¿Cuál de los siguientes verbos NO debe utilizarse al redactar un objetivo de investigación científica?",
+                options: [
+                    "Analizar",
+                    "Concientizar",
+                    "Describir",
+                    "Determinar"
+                ],
+                correct: 1,
+                explanation: "'Concientizar', 'capacitar' o 'educar' son propósitos de intervención clínica o social, no metas cognoscitivas de investigación empírica."
+            },
+            {
+                category: "Relaciones de Causalidad e Hipótesis",
+                title: "En una hipótesis causal, ¿cómo se denominan respectivamente a las supuestas causas y a los efectos provocados?",
+                options: [
+                    "Variable Dependiente e Variable Independiente.",
+                    "Variable Independiente e Variable Dependiente.",
+                    "Unidad de Análisis y Muestra.",
+                    "Dimensión e Indicador."
+                ],
+                correct: 1,
+                explanation: "La causa postulada es la Variable Independiente y el resultado o consecuencia provocada es la Variable Dependiente."
+            },
+            {
+                category: "Muestreo Cuantitativo vs Cualitativo",
+                title: "¿Cuál es la finalidad principal de la muestra en un estudio CUANTITATIVO a diferencia de uno CUALITATIVO?",
+                options: [
+                    "Comprender vivencias personales en profundidad sin importar el número.",
+                    "Generalizar estadísticamente los resultados obtenidos a la población total.",
+                    "Seleccionar únicamente participantes voluntarios.",
+                    "Evitar el uso de estadísticas."
+                ],
+                correct: 1,
+                explanation: "El enfoque cuantitativo busca representatividad para generalizar hallazgos de la muestra a la población total."
+            },
+            {
+                category: "Muestreo No Probabilístico",
+                context: "Un investigador decide encuestar exactamente a 20 enfermeros del turno mañana, 20 del turno tarde y 20 del turno noche de un hospital.",
+                title: "¿Qué tipo de muestreo no probabilístico está aplicando?",
+                options: [
+                    "Muestreo Aleatorio Simple",
+                    "Muestreo por Cuotas",
+                    "Muestreo Sistemático",
+                    "Censo Total"
+                ],
+                correct: 1,
+                explanation: "El muestreo por cuotas consiste en fijar proporciones o cantidades preestablecidas por categorías (turnos, sexo) sin selección aleatoria."
+            },
+            {
+                category: "Muestreo Probabilístico",
+                title: "¿Qué requisito define a una muestra PROBABILÍSTICA en la investigación cuantitativa?",
+                options: [
+                    "Que todos los elementos de la población tengan la misma probabilidad conocida de ser elegidos al azar.",
+                    "Que el investigador elija a los participantes según su criterio de experto.",
+                    "Que la encuesta se aplique solo a quienes tengan tiempo disponible.",
+                    "Que la muestra sea menor a 10 personas."
+                ],
+                correct: 0,
+                explanation: "En las muestras probabilísticas todos los sujetos de la población delimitada tienen la misma probabilidad de ser seleccionados mediante procedimientos aleatorios."
+            },
+            {
+                category: "Principios Bioéticos",
+                title: "El derecho del participante a decidir libremente su ingreso o retiro de una investigación se fundamenta en el principio bioético de:",
+                options: [
+                    "No Maleficencia",
+                    "Autonomía",
+                    "Justicia Distributiva",
+                    "Beneficencia Pura"
+                ],
+                correct: 1,
+                explanation: "El principio de Autonomía exige respetar la capacidad de autodeterminación del sujeto y se formaliza mediante el Consentimiento Informado."
+            },
+            {
+                category: "Marco Legal y Ética",
+                title: "En Argentina, ¿qué ley nacional garantiza la protección de datos personales y la privacidad de los participantes de un estudio?",
+                options: [
+                    "Ley 25.326 de Protección de Datos Personales",
+                    "Ley de Contrato de Trabajo",
+                    "Ley de Ejercicio Profesional de Enfermería 24.004",
+                    "Código de Comercio"
+                ],
+                correct: 0,
+                explanation: "La Ley 25.326 regula la protección de datos personales asentados en archivos y bases de datos garantizando confidencialidad e intimidad."
+            },
+            {
+                category: "Redacción Académica",
+                title: "¿Cómo debe redactarse un texto académico científico según la pauta de 'despersonalización'?",
+                options: [
+                    "En primera persona del singular ('Yo investigué...').",
+                    "En tercera persona o modo impersonal ('Se analizó...', 'Se observó...').",
+                    "Utilizando lenguaje coloquial informal.",
+                    "Expresando opiniones emocionales del autor."
+                ],
+                correct: 1,
+                explanation: "La redacción científica requiere despersonalización utilizando el modo impersonal o tercera persona para mantener rigor y objetividad."
+            },
+            {
+                category: "Marco Teórico",
+                title: "¿Cuál es la función principal del MARCO TEÓRICO en una investigación?",
+                options: [
+                    "Demostrar que el investigador tiene muchos libros en su casa.",
+                    "Sustentar teóricamente el estudio, analizar antecedentes e integrar teorías que respaldan el problema.",
+                    "Reemplazar la recolección de datos en el trabajo de campo.",
+                    "Decidir el salario de los encuestados."
+                ],
+                correct: 1,
+                explanation: "El marco teórico provee el marco conceptual y los antecedentes que orientan y fundamentan el planteamiento y los hallazgos del estudio."
+            },
+            {
+                category: "Operacionalización de Variables",
+                title: "En el proceso de operacionalizar una variable compleja, ¿cuál es el paso intermedio entre la variable conceptual y el indicador?",
+                options: [
+                    "El instrumento de recolección.",
+                    "La dimensión (subconjunto de elementos que integran la variable).",
+                    "La muestra representativa.",
+                    "La hipótesis alternativa."
+                ],
+                correct: 1,
+                explanation: "Las dimensiones son los vertientes o subconceptos en que se desglosa una variable compleja para luego asociarle indicadores observables."
+            },
+            {
+                category: "Diseños de Investigación",
+                title: "Un estudio donde los datos son recolectados en un único momento temporal con el fin de describir variables se denomina:",
+                options: [
+                    "Estudio Longitudinal",
+                    "Estudio Transversal (o Transeccional)",
+                    "Estudio Experimental Puro",
+                    "Ensayo Clínico Aleatorizado"
+                ],
+                correct: 1,
+                explanation: "El diseño transversal mide las variables en un solo punto en el tiempo (es como una fotografía de la situación)."
+            },
+            {
+                category: "Tipo de Estudio",
+                title: "Cuando la información se obtiene directamente de la realidad o espacio donde ocurren los hechos, se trata de una investigación:",
+                options: [
+                    "Bibliográfica Pura",
+                    "De Campo",
+                    "Simulada",
+                    "Secundaria"
+                ],
+                correct: 1,
+                explanation: "Las investigaciones de campo recolectan datos primarios de la fuente directa en el contexto real donde sucede el fenómeno."
+            },
+            {
+                category: "Prueba Piloto",
+                title: "¿Qué objetivo tiene la PRUEBA PILOTO de un cuestionario antes de aplicarlo a la muestra definitiva?",
+                options: [
+                    "Evaluar la claridad, comprensión y viabilidad del instrumento en un grupo reducido similar a la población.",
+                    "Obtener las conclusiones definitivas del proyecto de tesis.",
+                    "Aumentar el número de hojas del expediente académico.",
+                    "Aprobar la materia automáticamente."
+                ],
+                correct: 0,
+                explanation: "La prueba piloto pone a prueba el instrumento en un pequeño grupo para corregir ambigüedades, tiempos de respuesta y fallas de comprensión."
+            },
+            {
+                category: "Validez del Instrumento",
+                title: "La evaluación del instrumento por parte de tres o más profesionales expertos en el tema para verificar pertinencia y claridad se conoce como:",
+                options: [
+                    "Juicio de Expertos (Validez de Contenido)",
+                    "Consentimiento Informado",
+                    "Muestreo por Bola de Nieve",
+                    "Análisis Bioestadístico"
+                ],
+                correct: 0,
+                explanation: "El juicio de expertos es el procedimiento en el cual especialistas revisan la coherencia y relevancia de los ítems del instrumento."
+            },
+            {
+                category: "Variables Intervinientes",
+                title: "Aquellas variables que no son el objeto principal pero que pueden afectar o modificar la relación entre la causa y el efecto se denominan:",
+                options: [
+                    "Variables Independientes Puras",
+                    "Variables Intervinientes o Extrañas",
+                    "Unidades de Análisis",
+                    "Muestras Representativas"
+                ],
+                correct: 1,
+                explanation: "Las variables intervinientes son factores ambientales o del sujeto que deben ser controladas para no distorsionar la relación causa-efecto."
+            },
+            {
+                category: "Estrategia PICO",
+                title: "En la formulación de preguntas clínicas en enfermería bajo la estructura PICO, ¿qué significan sus siglas?",
+                options: [
+                    "Población, Intervención, Comparación y Resultado (Outcome)",
+                    "Problema, Hipótesis, Muestra y Criterios",
+                    "Paciente, Inserción, Cuidados y Observación",
+                    "Práctica, Investigación, Control y Objetivo"
+                ],
+                correct: 0,
+                explanation: "PICO es el acrónimo de Población/Paciente, Intervención, Comparación y Outcome (Resultado)."
+            },
+            {
+                category: "Normas Internacionales de Ética",
+                title: "¿Qué documento ético internacional histórico sienta las bases éticas fundamentales para la investigación en seres humanos?",
+                options: [
+                    "Declaración de Helsinki (Asociación Médica Mundial)",
+                    "Tratado de Versalles",
+                    "Manual de Citas APA 7ª edición",
+                    "Reglamento de Calificaciones Universitario"
+                ],
+                correct: 0,
+                explanation: "La Declaración de Helsinki de la AMM es la guía ético-médica internacional primordial para investigaciones con seres humanos."
+            },
+            {
+                category: "Ética y Resguardo de Datos",
+                title: "Garantizar que los nombres o identificadores personales de los participantes no aparezcan en las bases de datos responde al principio de:",
+                options: [
+                    "Anonimato y Confidencialidad",
+                    "Plagio Académico",
+                    "Muestreo Probabilístico",
+                    "Criterio de Inclusión"
+                ],
+                correct: 0,
+                explanation: "La confidencialidad y el anonimato aseguran que la identidad de los informantes esté desvinculada de los datos publicados."
+            },
+            {
+                category: "Muestreo No Probabilístico",
+                title: "Seleccionar a los participantes simplemente por su disponibilidad o cercanía al investigador se denomina:",
+                options: [
+                    "Muestreo Aleatorio Estratificado",
+                    "Muestreo por Conveniencia (o Accidental)",
+                    "Muestreo Sistemático",
+                    "Censo Institucional"
+                ],
+                correct: 1,
+                explanation: "El muestreo por conveniencia selecciona los casos que están disponibles y al alcance del investigador sin procedimiento aleatorio."
+            },
+            {
+                category: "Muestreo y Criterios",
+                title: "La regla 'Participantes que inician el estudio pero retiran voluntariamente su consentimiento antes de finalizar' corresponde a un:",
+                options: [
+                    "Criterio de Inclusión",
+                    "Criterio de Exclusión",
+                    "Criterio de Eliminación",
+                    "Criterio de Selección Inicial"
+                ],
+                correct: 2,
+                explanation: "El criterio de eliminación se aplica a los sujetos que ingresaron al estudio pero debieron salir o se retiraron durante el trabajo de campo."
+            },
+            {
+                category: "Enfoques de Investigación",
+                title: "El enfoque CUANTITATIVO se caracteriza principalmente por ser:",
+                options: [
+                    "Secuencial, deductivo, probatorio y basado en la medición numérica",
+                    "Totalmente improvisado e intuitivo",
+                    "Basado exclusivamente en relatos de vida sin datos numéricos",
+                    "No estructurado y circular sin hipótesis"
+                ],
+                correct: 0,
+                explanation: "El enfoque cuantitativo es rígido, estructurado, deductivo, busca acotar la información y utiliza análisis estadístico."
+            },
+            {
+                category: "Enfoques de Investigación",
+                title: "El enfoque CUALITATIVO se distingue por ser de naturaleza:",
+                options: [
+                    "Deductiva y rígida sin cambios en el diseño",
+                    "Inductiva, flexible, holística y orientada a reconstruir significados",
+                    "Exclusivamente matemática",
+                    "Experimentos de laboratorio a gran escala"
+                ],
+                correct: 1,
+                explanation: "El paradigma cualitativo es inductivo, holístico, explora realidades subjetivas y permite ajustar el proceso en el campo."
+            },
+            {
+                category: "Definición Operacional",
+                title: "La DEFINICIÓN OPERACIONAL de una variable consiste en:",
+                options: [
+                    "Copiar la definición textual del diccionario conceptual.",
+                    "Especificar los procedimientos y operaciones necesarias para medir la variable en la práctica.",
+                    "Anotar el nombre de los investigadores en el protocolo.",
+                    "Escribir una reflexión poética sobre la variable."
+                ],
+                correct: 1,
+                explanation: "La definición operacional establece los indicadores e instrumentos concretos con los que la variable será medida o registrada empíricamente."
+            },
+            {
+                category: "Errores en Preguntas de Investigación",
+                title: "¿Por qué es incorrecta la pregunta '¿Cómo resolver la falta de insumos en todos los hospitales del país'?",
+                options: [
+                    "Porque es un objetivo específico.",
+                    "Porque es excesivamente amplia, inabarcable y carece de viabilidad empírica para un tesista.",
+                    "Porque tiene dimensión temporal.",
+                    "Porque utiliza lenguaje técnico de salud."
+                ],
+                correct: 1,
+                explanation: "Una pregunta de investigación debe ser viable y alcanzable. Formularla a escala nacional sin delimitar recursos la vuelve inabordable."
+            },
+            {
+                category: "Coherencia Metodológica",
+                title: "¿Cuál es la relación lógica entre el Objetivo General y los Objetivos Específicos de una investigación?",
+                options: [
+                    "Los objetivos específicos son pasos necesarios y desglosados cuya suma permite alcanzar el objetivo general.",
+                    "Los específicos abordan temas totalmente distintos al objetivo general.",
+                    "El objetivo específico es más amplio que el general.",
+                    "No guardan relación entre sí."
+                ],
+                correct: 0,
+                explanation: "Los objetivos específicos desagregan las acciones cognoscitivas requeridas para responder y lograr la meta del Objetivo General."
+            },
+            {
+                category: "Verbos en Objetivos Descriptivos",
+                title: "De la siguiente lista de verbos, señala cuáles corresponden al nivel DESCRIPTIVO de investigación:",
+                options: [
+                    "Conocer, explorar, sondear",
+                    "Identificar, describir, caracterizar, clasificar",
+                    "Demostrar, comprobar, explicar causas",
+                    "Concientizar, educar, capacitar"
+                ],
+                correct: 1,
+                explanation: "'Identificar', 'describir' y 'caracterizar' son verbos propios del nivel descriptivo que buscan especificar propiedades del fenómeno."
+            },
+            {
+                category: "Verbos en Objetivos Explicativos",
+                title: "¿Qué verbo es el más adecuado para un estudio de nivel EXPLICATIVO o CAUSAL?",
+                options: [
+                    "Describir",
+                    "Explorar",
+                    "Determinar las causas de (o Explicar el efecto de)",
+                    "Entrevistar"
+                ],
+                correct: 2,
+                explanation: "Los estudios explicativos buscan esclarecer las razones y causas del fenómeno, utilizando verbos como 'explicar', 'determinar el efecto' o 'comprobar'."
+            },
+            {
+                category: "Criterios de Selección",
+                title: "En la delimitación de la población, 'Pacientes adultos mayores de 18 años internados en clínica médica' representa un:",
+                options: [
+                    "Criterio de Exclusión",
+                    "Criterio de Inclusión",
+                    "Criterio de Eliminación",
+                    "Error Sistemático"
+                ],
+                correct: 1,
+                explanation: "Los criterios de inclusión son las características indispensables que debe poseer un sujeto para ser considerado parte de la población de estudio."
+            },
+            {
+                category: "Población Finita e Infinita",
+                title: "Una población compuesta por 'Los estudiantes matriculados en Investigación II en el primer cuatrimestre 2026' se clasifica como:",
+                options: [
+                    "Población Infinita e inasequible",
+                    "Población Finita y accesible",
+                    "Muestra cualitativa teórica",
+                    "Sesgo de selección"
+                ],
+                correct: 1,
+                explanation: "Es una población finita porque se conoce la cantidad delimitada de unidades y existe un registro institucional de ellas."
+            },
+            {
+                category: "Triangulación Metodológica",
+                title: "La estrategia de combinar métodos cuantitativos y cualitativos o múltiples fuentes para estudiar un mismo fenómeno se denomina:",
+                options: [
+                    "Triangulación",
+                    "Operacionalización",
+                    "Despersonalización",
+                    "Sesgo muestral"
+                ],
+                correct: 0,
+                explanation: "La triangulación es el uso de múltiples métodos, fuentes de datos o investigadores para otorgar mayor rigor y validez al estudio."
+            },
+            {
+                category: "Matriz de Coherencia",
+                title: "En la matriz de coherencia metodológica, la Pregunta de Investigación, el Objetivo General y la Hipótesis deben guardar:",
+                options: [
+                    "Independencia absoluta sin coincidir en términos.",
+                    "Correspondencia y congruencia estricta en variables, sujeto y contexto.",
+                    "Diferencias en las variables estudiadas.",
+                    "Redacción en tiempo pasado exclusivamente."
+                ],
+                correct: 1,
+                explanation: "Existe un hilo conductor directo: el objetivo general expresa en infinitivo lo mismo que cuestiona la pregunta y predice la hipótesis."
+            },
+            {
+                category: "Construcción del Objeto",
+                title: "¿A qué se refiere la 'construcción del objeto de investigación' en Enfermería?",
+                options: [
+                    "A comprar maquetas e instrumental médico para el aula.",
+                    "A transformar una situación problemática de la práctica clínica en un problema investigable delimitado teórica y metodológicamente.",
+                    "A redactar el currículum vitae del docente.",
+                    "A buscar financiamiento comercial."
+                ],
+                correct: 1,
+                explanation: "Construir el objeto implica problematizar la realidad clínica pasando de la mera observación práctica a la delimitación teórica y empírica."
+            },
+            {
+                category: "Errores Éticos en Investigación",
+                title: "¿Cuál de los siguientes enunciados representa una FALTA ÉTICA en el proceso de investigación?",
+                options: [
+                    "Explicar detenidamente el estudio antes de pedir la firma del consentimiento.",
+                    "Omitir el consentimiento informado argumentando que la investigación tiene 'fines académicos'.",
+                    "Guardar las encuestas digitales en archivos protegidos con clave.",
+                    "Garantizar la participación voluntaria del personal."
+                ],
+                correct: 1,
+                explanation: "Toda investigación con seres humanos exige consentimiento informado, independientemente de si sus fines son académicos o institucionales."
+            },
+            {
+                category: "Instrumentos de Medición",
+                title: "Para medir actitudes o nivel de acuerdo de los enfermeros respecto a una norma, la escala estructurada más común es:",
+                options: [
+                    "Escala de Likert (Totalmente de acuerdo a Totalmente en desacuerdo)",
+                    "Entrevista en profundidad no estructurada",
+                    "Relato Etnográfico",
+                    "Análisis de sangre"
+                ],
+                correct: 0,
+                explanation: "La escala Likert es el instrumento psicométrico cuantitativo estándar para evaluar grados de actitud o acuerdo."
+            },
+            {
+                category: "Rol de la Investigación en Enfermería",
+                title: "¿Cuál es el valor fundamental de investigar en la práctica profesional de Enfermería según la cátedra?",
+                options: [
+                    "Transformar la experiencia práctica cotidiana en evidencia científica sustentable para la calidad del cuidado.",
+                    "Aumentar el papeleo administrativo en el hospital.",
+                    "Evitar el contacto directo con los pacientes.",
+                    "Aprender fórmulas de memoria para el examen."
+                ],
+                correct: 0,
+                explanation: "Como señala el lema de la asignatura: 'Investigar es atreverse a mirar más allá de la práctica y convertir la experiencia en evidencia'."
+            }
+        ];
+
+        /* STATE VARIABLES */
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswersCount = 0;
+        let timer = null;
+        let timeLeft = 300; // 5 MINUTES (300 seconds)
+        let studentData = { name: '' };
+        let streak = 0;
+        let soundEnabled = true;
+
+        /* PURE WEB AUDIO SYNTHESIZER FOR SOUNDS */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.25); // A5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130, audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.04);
+                }
+            } catch(e) {}
+        }
+
+        window.toggleSound = function() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+        };
+
+        /* NAVIGATION */
+        window.showView = function(viewName) {
+            playSound('click');
+            ['welcome', 'quiz', 'result', 'proyector'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+            if (viewName === 'proyector') {
+                renderLeaderboard();
+            }
+        };
+
+        /* START QUIZ */
+        window.startQuiz = function(event) {
+            event.preventDefault();
+            const name = document.getElementById('student-name').value.trim();
+
+            if (!name) return;
+
+            studentData = { name };
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswersCount = 0;
+            streak = 0;
+
+            showView('quiz');
+            loadQuestion();
+        };
+
+        /* FORMAT TIME INTO M:SS */
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        /* LOAD QUESTION */
+        function loadQuestion() {
+            clearInterval(timer);
+            const q = QUESTIONS_BANK[currentQuestionIndex];
+
+            // UI Progress Update
+            document.getElementById('badge-question-num').innerText = `Pregunta ${currentQuestionIndex + 1}/${QUESTIONS_BANK.length}`;
+            document.getElementById('badge-category').innerText = q.category;
+            document.getElementById('score-live').innerText = score;
+            document.getElementById('streak-counter').innerText = `Racha: x${streak + 1}`;
+
+            const progressPct = ((currentQuestionIndex + 1) / QUESTIONS_BANK.length) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${progressPct}%`;
+
+            // Context Box
+            const ctxBox = document.getElementById('question-context-box');
+            if (q.context) {
+                document.getElementById('question-context-text').innerText = q.context;
+                ctxBox.classList.remove('hidden');
+            } else {
+                ctxBox.classList.add('hidden');
+            }
+
+            // Title
+            document.getElementById('question-title').innerText = q.title;
+
+            // Options
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-2xl bg-white hover:bg-pink-50 border border-fuchsia-100 text-slate-800 font-medium text-sm sm:text-base transition transform active:scale-[0.99] flex items-center justify-between gap-3 shadow-sm option-btn`;
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-pink-100 text-fuchsia-800 font-extrabold text-xs flex items-center justify-center shrink-0 border border-pink-200">
+                            ${String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>${optText}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-slate-300"></i>
+                `;
+                btn.onclick = () => selectOption(idx);
+                container.appendChild(btn);
+            });
+
+            // Feedback Box Hide
+            document.getElementById('feedback-box').classList.add('hidden');
+
+            // Timer Initialization: 5 MINUTES (300 SECONDS)
+            timeLeft = 300;
+            document.getElementById('timer-text').innerText = formatTime(timeLeft);
+            document.getElementById('timer-box').classList.remove('pulse-timer', 'border-red-400');
+
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-text').innerText = formatTime(timeLeft);
+
+                if (timeLeft <= 15) {
+                    document.getElementById('timer-box').classList.add('pulse-timer', 'border-red-400');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    selectOption(-1); // Timeout
+                }
+            }, 1000);
+        }
+
+        /* SELECT OPTION */
+        function selectOption(selectedIdx) {
+            clearInterval(timer);
+            const q = QUESTIONS_BANK[currentQuestionIndex];
+            const isCorrect = selectedIdx === q.correct;
+
+            // Disable all option buttons
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            // Points calculation
+            let earnedPoints = 0;
+
+            if (isCorrect) {
+                playSound('correct');
+                streak++;
+                const timeBonus = Math.floor(timeLeft / 2); // Speed bonus based on 5-min timer
+                earnedPoints = 100 + timeBonus + (streak * 20);
+                score += earnedPoints;
+                correctAnswersCount++;
+            } else {
+                playSound('wrong');
+                streak = 0;
+            }
+
+            // Highlight Options
+            buttons.forEach((btn, idx) => {
+                if (idx === q.correct) {
+                    btn.className = 'w-full text-left p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-500 text-slate-900 font-bold text-sm sm:text-base flex items-center justify-between gap-3 shadow-sm';
+                    btn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-600 text-lg';
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = 'w-full text-left p-4 rounded-2xl bg-red-50 border-2 border-red-400 text-slate-900 font-bold text-sm sm:text-base flex items-center justify-between gap-3 shadow-sm';
+                    btn.querySelector('i').className = 'fa-solid fa-circle-xmark text-red-500 text-lg';
+                }
+            });
+
+            // Show Feedback Box
+            const fbBox = document.getElementById('feedback-box');
+            const fbTitle = document.getElementById('feedback-title');
+            const fbText = document.getElementById('feedback-text');
+
+            fbBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                fbBox.className = 'rounded-2xl p-5 border bg-emerald-50/80 border-emerald-200 text-sm space-y-2';
+                fbTitle.className = 'flex items-center gap-2 font-black text-base text-emerald-800';
+                fbTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> ¡Respuesta Correcta! (+${earnedPoints} pts)`;
+            } else {
+                fbBox.className = 'rounded-2xl p-5 border bg-pink-50/80 border-pink-200 text-sm space-y-2';
+                fbTitle.className = 'flex items-center gap-2 font-black text-base text-fuchsia-800';
+                fbTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-fuchsia-600"></i> ${selectedIdx === -1 ? '¡Tiempo Agotado!' : 'Respuesta Incorrecta'}`;
+            }
+
+            fbText.innerText = q.explanation;
+        }
+
+        /* NEXT QUESTION OR FINISH */
+        window.nextQuestion = function() {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < QUESTIONS_BANK.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        };
+
+        /* FINISH QUIZ */
+        function finishQuiz() {
+            playSound('correct');
+
+            const totalQ = QUESTIONS_BANK.length;
+            const percentage = Math.round((correctAnswersCount / totalQ) * 100);
+            const isApproved = percentage >= 60;
+
+            document.getElementById('result-student-name').innerText = studentData.name;
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-correct').innerText = `${correctAnswersCount}/${totalQ}`;
+            document.getElementById('res-percentage').innerText = `${percentage}%`;
+
+            const statusBadge = document.getElementById('result-badge-status');
+            const feedbackMsg = document.getElementById('result-feedback-msg');
+
+            if (isApproved) {
+                statusBadge.className = 'text-xs sm:text-sm font-bold inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+                statusBadge.innerText = `Aprobado (${percentage}% = Nota 4+)`;
+                feedbackMsg.innerText = "¡Excelente trabajo! Has demostrado una comprensión muy sólida de los temas metodológicos.";
+            } else {
+                statusBadge.className = 'text-xs sm:text-sm font-bold inline-block px-3.5 py-1 rounded-full bg-pink-100 text-fuchsia-800 border border-pink-200';
+                statusBadge.innerText = `A Repasar (${percentage}%)`;
+                feedbackMsg.innerText = "Revisa los conceptos clave de variables e hipótesis antes de la entrega final.";
+            }
+
+            const record = {
+                id: crypto.randomUUID(),
+                student: studentData.name,
+                score: score,
+                correct: correctAnswersCount,
+                total: totalQ,
+                timestamp: new Date().toISOString()
+            };
+
+            if (window.saveResultToCloud) {
+                window.saveResultToCloud(record);
+            }
+
+            showView('result');
+        }
+
+        /* LEADERBOARD & PODIUM RENDERER */
+        function updateLeaderboardUI(dataList) {
+            const tableBody = document.getElementById('leaderboard-table-body');
+            if (!tableBody) return;
+
+            const sorted = [...dataList].sort((a, b) => b.score - a.score);
+
+            if (sorted.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-slate-400 italic">
+                            No hay resultados registrados aún. ¡Completa la actividad para sumar tus puntos!
+                        </td>
+                    </tr>
+                `;
+                resetPodiumUI();
+                return;
+            }
+
+            // Update Podium
+            if (sorted[0]) {
+                document.getElementById('podium-1-name').innerText = sorted[0].student;
+                document.getElementById('podium-1-score').innerText = `${sorted[0].score} pts`;
+                document.getElementById('podium-1-avatar').innerText = getInitials(sorted[0].student);
+            }
+            if (sorted[1]) {
+                document.getElementById('podium-2-name').innerText = sorted[1].student;
+                document.getElementById('podium-2-score').innerText = `${sorted[1].score} pts`;
+                document.getElementById('podium-2-avatar').innerText = getInitials(sorted[1].student);
+            } else {
+                document.getElementById('podium-2-name').innerText = '--';
+                document.getElementById('podium-2-score').innerText = '0 pts';
+            }
+            if (sorted[2]) {
+                document.getElementById('podium-3-name').innerText = sorted[2].student;
+                document.getElementById('podium-3-score').innerText = `${sorted[2].score} pts`;
+                document.getElementById('podium-3-avatar').innerText = getInitials(sorted[2].student);
+            } else {
+                document.getElementById('podium-3-name').innerText = '--';
+                document.getElementById('podium-3-score').innerText = '0 pts';
+            }
+
+            // Update Table
+            tableBody.innerHTML = '';
+            sorted.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index < 3 ? 'bg-pink-50/60 font-bold' : 'hover:bg-pink-50/30';
+
+                let posBadge = `<span class="font-bold text-slate-400">#${index + 1}</span>`;
+                if (index === 0) posBadge = `<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-black"><i class="fa-solid fa-trophy text-amber-500"></i> 1º</span>`;
+                if (index === 1) posBadge = `<span class="px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 font-bold">2º</span>`;
+                if (index === 2) posBadge = `<span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold">3º</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3.5 px-4">${posBadge}</td>
+                    <td class="py-3.5 px-4 font-bold text-slate-900">${item.student}</td>
+                    <td class="py-3.5 px-4 text-center text-emerald-600 font-extrabold">${item.correct}/${item.total || 50}</td>
+                    <td class="py-3.5 px-4 text-right text-fuchsia-700 font-black text-base">${item.score} pts</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function resetPodiumUI() {
+            ['1','2','3'].forEach(pos => {
+                document.getElementById(`podium-${pos}-name`).innerText = '--';
+                document.getElementById(`podium-${pos}-score`).innerText = '0 pts';
+                document.getElementById(`podium-${pos}-avatar`).innerText = '--';
+            });
+        }
+
+        function getInitials(name) {
+            if (!name) return '??';
+            const parts = name.trim().split(' ');
+            if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+            return name.substring(0, 2).toUpperCase();
+        }
+
+        function renderLeaderboard() {
+            const data = window.fetchLatestResults ? window.fetchLatestResults() : [];
+            updateLeaderboardUI(data);
+        }
+
+        /* CONFETTI ANIMATION */
+        window.triggerConfetti = function() {
+            playSound('correct');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        };
+
+        /* REVIEW MODAL */
+        window.showReviewModal = function() {
+            const container = document.getElementById('review-content');
+            container.innerHTML = '';
+
+            QUESTIONS_BANK.forEach((q, idx) => {
+                const div = document.createElement('div');
+                div.className = 'pt-4 first:pt-0 space-y-2';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 text-xs font-bold text-fuchsia-600 uppercase">
+                        <span>Pregunta ${idx + 1}</span> • <span>${q.category}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">${q.title}</h4>
+                    <div class="bg-pink-50/70 p-3.5 rounded-xl border border-pink-200 space-y-1">
+                        <div class="text-xs text-emerald-700 font-extrabold flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i> Opción Correcta: ${q.options[q.correct]}
+                        </div>
+                        <p class="text-xs text-slate-600 italic pt-1">${q.explanation}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('modal-review').classList.remove('hidden');
+        };
+
+        window.closeReviewModal = function() {
+            document.getElementById('modal-review').classList.add('hidden');
+        };
+
+        window.clearLeaderboardConfirm = function() {
+            if (confirm("¿Deseas reiniciar la tabla de posiciones local para una nueva competencia?")) {
+                localStorage.removeItem('cr_results_pastel_50q');
+                renderLeaderboard();
+            }
+        };
+
+        window.resetApp = function() {
+            showView('welcome');
+        };
+
+        // Initialize total count in welcome screen
+        document.getElementById('stat-total-q').innerText = QUESTIONS_BANK.length;
+    </script>
+</body>
+</html>
